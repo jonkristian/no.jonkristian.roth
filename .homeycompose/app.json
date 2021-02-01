@@ -24,6 +24,16 @@
       "thermostat"
     ]
   },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "jonkristian"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/jonkristian/no.jonkristian.roth/issues"
+  },
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"

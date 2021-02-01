@@ -27,8 +27,8 @@
         {
             "id": "holiday",
             "title": {
-                "en": "Holiday",
-                "nl": "Ferie"
+                "en": "Holiday (Off)",
+                "no": "Ferie (Av)"
             }
         },
         {

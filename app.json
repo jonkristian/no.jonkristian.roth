@@ -25,6 +25,16 @@
       "thermostat"
     ]
   },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "jonkristian"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/jonkristian/no.jonkristian.roth/issues"
+  },
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
@@ -42,10 +52,18 @@
       },
       "class": "thermostat",
       "capabilities": [
+        "onoff",
         "target_temperature",
         "measure_temperature",
         "thermostat_mode"
       ],
+      "capabilitiesOptions": {
+        "target_temperature": {
+          "min": 5,
+          "max": 40,
+          "step": 0.5
+        }
+      },
       "icon": "/drivers/touchline/assets/icon.svg",
       "images": {
         "large": "/drivers/touchline/assets/images/large.png",
@@ -96,8 +114,8 @@
         {
           "id": "holiday",
           "title": {
-            "en": "Holiday",
-            "nl": "Ferie"
+            "en": "Holiday (Off)",
+            "no": "Ferie (Av)"
           }
         },
         {

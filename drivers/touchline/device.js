@@ -30,8 +30,23 @@ class TouchlineDevice extends Homey.Device {
       this.controller.setTargetTemperature(value*100);
     });
     
-    this.registerCapabilityListener('thermostat_mode', (value,opts) => {
-      this.controller.setThermostatMode(value);
+    this.registerCapabilityListener('thermostat_mode', async (value,opts) => {
+      if ( 'holiday' == value ) {
+          await this.setCapabilityValue('onoff', false).catch(err => this.log(err));
+      } else {
+        if (this.getCapabilityValue('onoff') !== true) {
+          await this.setCapabilityValue('onoff', true).catch(err => this.log(err));
+        }
+      }
+      await this.controller.setThermostatMode(value);
+    });
+
+    this.registerCapabilityListener('onoff', async (value,opts) => {
+      if (value == false) {
+        await this.controller.setThermostatMode('holiday');
+      } else {
+        await this.controller.setThermostatMode('comfort');
+      }
     });
 
     let statusInterval = Homey.ManagerSettings.get('pollInterval') || 120;
@@ -43,6 +58,7 @@ class TouchlineDevice extends Homey.Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
+    await this.controller.refreshThermostatData();
     this.log('Thermostat has been added.');
   }
 
@@ -92,6 +108,7 @@ class TouchlineDevice extends Homey.Device {
 
       this.setCapabilityValue('measure_temperature', refresh.RaumTemp/100);
       this.setCapabilityValue('target_temperature', refresh.SollTemp/100);
+
     } catch (error) {
       this.log('Failed to refresh thermostat: '+this.getData().id, error);
     }
