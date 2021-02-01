@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+</head>
+
+<body>
+
+    <h1 data-i18n="settings.title"></h1>
+
+    <p data-i18n="settings.intro"></p>
+
+    <fieldset>
+        <legend data-i18n="settings.controllersection"></legend>
+        <div class="field row">
+            <label data-i18n="settings.controllerip"></label>
+            <input id="controllerIP" type="text">
+        </div>
+
+        <div class="field row">
+            <label data-i18n="settings.controllerpolling"></label>
+            <input id="pollInterval" type="number">
+            <p><small><i>How often to poll thermostats (Default 120).</i></small></p>
+        </div>
+    </fieldset>
+
+    <button id="save" class="right" data-i18n="settings.save"></button>
+
+    <script type="text/javascript">
+
+        function onHomeyReady(Homey) {
+
+            Homey.ready();
+
+            let controllerIP = document.getElementById('controllerIP');
+            let pollInterval = document.getElementById('pollInterval');
+            let saveElement = document.getElementById('save');
+
+            Homey.get('controllerIP', function (err, value) {
+                if (err) return Homey.alert(err);
+                controllerIP.value = value;
+            });
+
+            Homey.get('pollInterval', function (err, value) {
+                if (err) return Homey.alert(err);
+                pollInterval.value = value;
+            });
+
+            saveElement.addEventListener('click', function () {
+                Homey.set('controllerIP', controllerIP.value, function ( err ) {
+                    if ( err ) return Homey.alert( err );
+                });
+
+                Homey.set('pollInterval', pollInterval.value, function ( err ) {
+                    if ( err ) return Homey.alert( err );
+                });
+
+                Homey.alert(__('settings.success'));
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+{
+    "type": "enum",
+    "uiComponent": "picker",
+    "title": {
+        "en": "Thermostat mode",
+        "no": "Termostatmodus"
+    },
+    "desc": {
+        "en": "Mode of the thermostat",
+        "no": "Termostatens modus"
+    },
+    "values": [
+        {
+            "id": "comfort",
+            "title": {
+                "en": "Comfort",
+                "no": "Komfort"
+            }
+        },
+        {
+            "id": "night",
+            "title": {
+                "en": "Night",
+                "no": "Natt"
+            }
+        },
+        {
+            "id": "holiday",
+            "title": {
+                "en": "Holiday",
+                "nl": "Ferie"
+            }
+        },
+        {
+            "id": "pro1",
+            "title": {
+                "en": "Pro I"
+            }
+        },
+        {
+            "id": "pro2",
+            "title": {
+                "en": "Pro II"
+            }
+        },
+        {
+            "id": "pro3",
+            "title": {
+                "en": "Pro III"
+            }
+        }
+    ],
+    "getable": true,
+    "setable": true
+}

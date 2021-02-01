@@ -1,0 +1,13 @@
+{
+    "save": "Lagre endringer",
+    "offline": "utilgjengelig",
+    "settings": {
+        "title": "Instillinger for Roth Touchline",
+        "intro": "Velkommen til instillingene for Roth Touchline appen. Appen er for tiden i alpha, brukes på egen risiko.",
+        "controllersection": "Kontroller",
+        "controllerip": "IP-adressen til din kontroller",
+        "controllerpolling": "Oppdateringsfrekvens for termostater",
+        "save": "Lagre",
+        "success": "Instillingene er lagret"
+    }
+}

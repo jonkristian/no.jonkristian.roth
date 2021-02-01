@@ -1,0 +1,35 @@
+{
+  "id": "no.jonkristian.touchline",
+  "version": "1.0.0",
+  "compatibility": ">=3.1.0",
+  "sdk": 2,
+  "brandColor": "#F72D16",
+  "name": {
+    "en": "Roth Touchline",
+    "no": "Roth Touchline"
+  },
+  "description": {
+    "en": "Control floor heating thermostats from Roth.",
+    "no": "Styring av termostater fra Roth."
+  },
+  "category": [
+    "climate"
+  ],
+  "permissions": [],
+  "tags": {
+    "en": [
+      "roth",
+      "temperature control",
+      "heating",
+      "thermostat"
+    ]
+  },
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Jon Kristian Nilsen",
+    "email": "hello@jonkristian.no"
+  }
+}

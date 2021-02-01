@@ -1,0 +1,13 @@
+{
+    "save": "Save changes",
+    "offline": "went offline",
+    "settings": {
+        "title": "Roth Touchline Settings",
+        "intro": "Welcome to the Roth Touchline app settings. This app is currently very much alpha release, use at your own risk.",
+        "controllersection": "Controller",
+        "controllerip": "Controller IP address",
+        "controllerpolling": "Refresh interval for thermostats",
+        "save": "Save",
+        "success": "The settings has been applied."
+    }
+}
