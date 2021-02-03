@@ -1,21 +1,16 @@
 'use strict';
 
 const Homey = require('homey');
-const Touchline = require('../../app');
 const { TouchlineController } = require('../../lib/touchline');
 
-const fetch = require('node-fetch');
-const xml2js = require('xml2js');
-
 class TouchlineDriver extends Homey.Driver {
+
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('Roth Touchline has been initialized.');
     this.controller = new TouchlineController();
   }
-
 
   /**
    * Get number of thermostats and thermostat data.
@@ -35,7 +30,6 @@ class TouchlineDriver extends Homey.Driver {
 
       // Fetch thermostat data and prepare data for homey.
       const fetchQuery = await this.controller.getControllerData(items);
-
       fetchQuery.i.forEach(function (el, i) {
         thermostats.push( {
             "data": { "id": i },

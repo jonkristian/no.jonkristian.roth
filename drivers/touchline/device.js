@@ -1,67 +1,56 @@
 'use strict';
 
 const Homey = require('homey');
-const Touchline = require('../../app');
 const { TouchlineController } = require('../../lib/touchline');
 
-const thermostatModes = {
-  'OPMode': {
-    0: 'comfort',
-    1: 'night',
-    2: 'holiday'
-  },
-  'WeekProg': {
-      1: 'pro1',
-      2: 'pro2',
-      3: 'pro3'
-  }
-};
-
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 class TouchlineDevice extends Homey.Device {
+
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('Touchline has been initialized');
+    this.setAvailable();
 
     this.controller = new TouchlineController( this.getData().id );
+    this.polling = true;
 
-		this.registerCapabilityListener('target_temperature', (value,opts) => {
-      this.controller.setTargetTemperature(value*100);
+		this.addListener('poll', this.pollDevice);
+
+		this.registerCapabilityListener('target_temperature', async (value,opts) => {
+      await this.controller.applyControllerData('SollTemp', value*100).catch(error => this.log(error));
     });
-    
+
     this.registerCapabilityListener('thermostat_mode', async (value,opts) => {
       if ( 'holiday' == value ) {
-          await this.setCapabilityValue('onoff', false).catch(err => this.log(err));
+          await this.setCapabilityValue('onoff', false).catch(error => this.log(error));
       } else {
         if (this.getCapabilityValue('onoff') !== true) {
-          await this.setCapabilityValue('onoff', true).catch(err => this.log(err));
+          await this.setCapabilityValue('onoff', true).catch(error => this.log(error));
         }
       }
-      await this.controller.setThermostatMode(value);
+
+      await this.controller.setThermostatMode(value).catch(error => this.log(error));
     });
 
     this.registerCapabilityListener('onoff', async (value,opts) => {
       if (value == false) {
-        await this.controller.setThermostatMode('holiday');
+        await this.controller.setThermostatMode('holiday').catch(error => this.log(error));
       } else {
-        await this.controller.setThermostatMode('comfort');
+        await this.controller.setThermostatMode('comfort').catch(error => this.log(error));
       }
     });
 
-    let statusInterval = Homey.ManagerSettings.get('pollInterval') || 120;
-    this.pollStatus(statusInterval);
+    // Enable device polling
+    this.emit('poll');
   }
-
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    await this.controller.refreshThermostatData();
     this.log('Thermostat has been added.');
   }
-
 
   /**
    * onSettings is called when the user updates the device's settings.
@@ -75,64 +64,68 @@ class TouchlineDevice extends Homey.Device {
     this.log('Touchline thermostat settings where changed');
   }
 
-
   /**
    * onRenamed is called when the user updates the device's name.
    * This method can be used this to synchronise the name to the device.
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.controller.setThermostatName(name);
-    this.log('Thermostat was renamed');
+    await this.controller.applyControllerData('name', name).catch(error => this.log(error));
   }
-
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    clearInterval(this.statusInterval);
+    this.polling = false;
     this.log('Thermostat has been deleted.');
   }
 
+  /**
+   * Poll for new thermostat data.
+   * 
+   */
+  async pollDevice() {
+    while (this.polling) {
+      const params = this.prepareDeviceParams();
+      await this.controller.getControllerData(params)
+      .then(result => {
+        const modes = this.controller.getModesMap();
+        const data = [];
+        result.i.forEach(function (el, i) {
+            data[el.n.split(".").pop()] = el.v
+        });
+        if ( undefined != data.weekProg && 0 > data.WeekProg ) {
+          this.setCapabilityValue('thermostat_mode', modes.WeekProg[data.WeekProg]).catch(err => this.log(err));
+        } else {
+          this.setCapabilityValue('thermostat_mode', modes.OPMode[data.OPMode]).catch(err => this.log(err));
+        }
+        this.setCapabilityValue('measure_temperature', data.RaumTemp/100).catch(err => this.log(err));
+        this.setCapabilityValue('target_temperature', data.SollTemp/100).catch(err => this.log(err));
+      })
+      .catch(error => {
+        this.log(error);
+      });
 
-  async refreshThermostat() {
-    try {
-      const refresh = await this.controller.refreshThermostatData();
-
-      if ( undefined != refresh.weekProg && 0 > refresh.WeekProg ) {
-        this.setCapabilityValue('thermostat_mode', thermostatModes.WeekProg[refresh.WeekProg]);
-      } else {
-        this.setCapabilityValue('thermostat_mode', thermostatModes.OPMode[refresh.OPMode]);
-      }
-
-      this.setCapabilityValue('measure_temperature', refresh.RaumTemp/100);
-      this.setCapabilityValue('target_temperature', refresh.SollTemp/100);
-
-    } catch (error) {
-      this.log('Failed to refresh thermostat: '+this.getData().id, error);
+      let pollInterval = Homey.ManagerSettings.get('pollInterval') || 120;
+      await delay(pollInterval*1000);
     }
   }
 
-
-  pollStatus(interval) {
-    clearInterval(this.statusInterval);
-    this.statusInterval = setInterval(() => {
-        try {
-          this.refreshThermostat();
-
-          if (!this.getAvailable()) {
-            this.setAvailable();
-          }
-        } catch (error) {
-          this.log(error);
-          clearInterval(this.statusInterval);
-          this.setUnavailable(Homey.__('unreachable'));
-          setTimeout(() => {
-            this.log("Timeout set");
-          }, 1000 * interval);
-        }
-    }, 1000 * interval);
+  /**
+   * Parameters to query controller.
+   * 
+   * @param {int} device Id of the thermostat.
+   */
+  prepareDeviceParams() {
+    const device = this.getData().id;
+    return [
+      { n: 'G'+device+'.name' },
+      { n: 'G'+device+'.OPMode' },
+      { n: 'G'+device+'.WeekProg' },
+      { n: 'G'+device+'.SollTemp' },
+      { n: 'G'+device+'.RaumTemp' }
+    ];
   }
 }
 
