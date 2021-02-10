@@ -90,21 +90,24 @@ class TouchlineDevice extends Homey.Device {
       const params = this.prepareDeviceParams();
       await this.controller.getControllerData(params)
       .then(result => {
-        const modes = this.controller.getModesMap();
-        const data = [];
-        result.i.forEach(function (el, i) {
-            data[el.n.split(".").pop()] = el.v
-        });
-        if ( undefined != data.weekProg && 0 > data.WeekProg ) {
-          this.setCapabilityValue('thermostat_mode', modes.WeekProg[data.WeekProg]).catch(err => this.log(err));
-        } else {
-          this.setCapabilityValue('thermostat_mode', modes.OPMode[data.OPMode]).catch(err => this.log(err));
+        if (null !== result) {
+          const modes = this.controller.getModesMap();
+          const data = [];
+          result.i.forEach(function (el, i) {
+              data[el.n.split(".").pop()] = el.v
+          });
+          if ( undefined != data.weekProg && 0 > data.WeekProg ) {
+            this.setCapabilityValue('thermostat_mode', modes.WeekProg[data.WeekProg]).catch(err => this.log(err));
+          } else {
+            this.setCapabilityValue('thermostat_mode', modes.OPMode[data.OPMode]).catch(err => this.log(err));
+          }
+          this.setCapabilityValue('measure_temperature', data.RaumTemp/100).catch(err => this.log(err));
+          this.setCapabilityValue('target_temperature', data.SollTemp/100).catch(err => this.log(err));
         }
-        this.setCapabilityValue('measure_temperature', data.RaumTemp/100).catch(err => this.log(err));
-        this.setCapabilityValue('target_temperature', data.SollTemp/100).catch(err => this.log(err));
       })
       .catch(error => {
-        this.log(error);
+        // Sometimes these thermostats doesn't report back, supressing errors.
+        // this.log(error);
       });
 
       let pollInterval = Homey.ManagerSettings.get('pollInterval') || 120;
