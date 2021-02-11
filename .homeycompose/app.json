@@ -9,8 +9,8 @@
     "no": "Roth Touchline"
   },
   "description": {
-    "en": "Control floor heating thermostats from Roth.",
-    "no": "Styring av termostater fra Roth."
+    "en": "Control floor heating thermostats from Roth",
+    "no": "Styring av termostater fra Roth"
   },
   "category": [
     "climate"
@@ -19,6 +19,7 @@
   "tags": {
     "en": [
       "roth",
+      "touchline",
       "temperature control",
       "heating",
       "thermostat"
@@ -31,6 +32,7 @@
       }
     }
   },
+  "source": "https://github.com/jonkristian/no.jonkristian.roth",
   "bugs": {
     "url": "https://github.com/jonkristian/no.jonkristian.roth/issues"
   },

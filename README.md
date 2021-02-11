@@ -27,5 +27,8 @@ Please report issues at the [issues section on Github](https://github.com/jonkri
 <a href="https://www.buymeacoffee.com/jonkristian" target="_blank"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 ## Release Notes
+#### 1.0.1
+- Changed descriptions and added source url.
+
 #### 1.0.0
 - Stable for app store
