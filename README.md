@@ -1,5 +1,7 @@
 # Roth Touchline
 
+![Project Maintenance][maintenance-shield]
+
 Control floor heating thermostats from Roth. To use this app you should have one controller, if you have more than one physical controller they have to be set up as master <-> slave.
 
 Once installed, visit the app settings and enter the controller IP, then you should be able to add your devices (thermostats).
@@ -35,3 +37,5 @@ Please report issues at the [issues section on Github](https://github.com/jonkri
 
 #### 1.0.0
 - Stable for app store
+
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg?style=for-the-badge
